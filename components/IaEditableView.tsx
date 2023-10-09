@@ -1,25 +1,34 @@
 import { ActivityIndicator, Button, StyleSheet, TextInput } from 'react-native';
 
-import EditScreenInfo from '../../components/EditScreenInfo';
-import { Text, View } from '../../components/Themed';
 import { useContext, useState } from 'react';
-import { OpenAiContext } from '../../utils/contexts/OpenAiContext';
-import { useOpenAi } from '../../utils/hooks/useOpenAi';
 import { AxiosResponse } from 'axios';
 import WebView from 'react-native-webview';
+import { useOpenAi } from '../utils/hooks/useOpenAi';
+import { Text, View } from './Themed';
 
-export default function TabOneScreen() {
-  const {handleRequestHtml, isLoading} = useOpenAi()
+interface Props {
+  appKey: string;
+  routeName: string;
+}
+
+const IAEditableScreen: React.FC<Props> = ({appKey, routeName}) => {
+  const {handleRequestHtml, isLoading, openAiMessages} = useOpenAi(appKey, routeName)
   const [userInput, setUserInput] = useState<string>('')
-  const [html, setHtml] = useState('');
+  const [html, setHtml] = useState<string>('');
 
   const handleChangeHtml = (response: AxiosResponse) => {
-    setHtml(response.data.choices[0].message.content)
+    const htmlContent = response.data.choices[0].message.content;
+    console.log(htmlContent, 'this is the html content')
+
+    setHtml(htmlContent)
+    console.log('asdasdas')
   }
 
-  if (html) {
+  const lastResponse = openAiMessages[appKey][routeName].messages.findLast(messageData => messageData.role == 'assistant')
+
+  if (lastResponse?.content) {
     return <View style={{height: '100%', width: '100%'}}>
-      <WebView scalesPageToFit source={{ html: html }} />
+      <WebView scalesPageToFit source={{ html: lastResponse?.content }} />
       
       <View style={styles.inputContainer}>
         {isLoading ? <ActivityIndicator /> : <>
@@ -28,8 +37,7 @@ export default function TabOneScreen() {
               title='Enviar'
               onPress={() => { handleRequestHtml(userInput, handleChangeHtml) }} />
           </>
-        }
-          
+        }      
         </View>
     </View>
   }
@@ -75,3 +83,6 @@ const styles = StyleSheet.create({
     width: '80%'
   }
 });
+
+
+export default IAEditableScreen;
