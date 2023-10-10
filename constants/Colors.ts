@@ -1,5 +1,6 @@
 const tintColorLight = '#2f95dc';
 const tintColorDark = '#fff';
+const primaryGreen = "#18C37D";
 
 export default {
   light: {
@@ -16,4 +17,10 @@ export default {
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
   },
+  gray: {
+    text: '#848484'
+  },
+  green: {
+    background: primaryGreen,
+  }
 };
