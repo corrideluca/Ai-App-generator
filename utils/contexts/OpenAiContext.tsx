@@ -84,14 +84,14 @@ const OpenAiConfigProvider: React.FC<Props> = ({ children }) => {
         .then((snapshot) => {
           if (snapshot.exists()) {
             // Data exists, so set it to the state
-            const apps = [];
-            snapshot.forEach((childSnapshot) => {
-              apps.push({
-                id: childSnapshot.key,
-                ...childSnapshot.val(),
-              });
-            });
-            console.log(apps, 'apps');
+            // const apps = [];
+            // snapshot.forEach((childSnapshot) => {
+            //   apps.push({
+            //     id: childSnapshot.key,
+            //     ...childSnapshot.val(),
+            //   });
+            // });
+            // console.log(apps, 'apps');
           } else {
             // Data does not exist for the given user
             console.log('No apps found for the user.');
