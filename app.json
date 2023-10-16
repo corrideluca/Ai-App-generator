@@ -16,13 +16,26 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.17898xxxxxx-xxxxxqhqj0exxxxxpl03xxx"
+            ]
+          }
+        ]
+      },
+      "bundleIdentifier": "com.deluca.AiApp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#ffffff",
+        "googleServicesFile": "./google-services.json"
+      },
+      "package": "com.deluca.AiApp"
     },
     "web": {
       "bundler": "metro",
@@ -30,7 +43,8 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "@react-native-google-signin/google-signin"
     ],
     "experiments": {
       "typedRoutes": true

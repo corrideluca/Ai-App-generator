@@ -1,6 +1,8 @@
 import react, { useContext, useState } from 'react'
 import { MessagesAiType, OpenAiContext } from '../contexts/OpenAiContext'
 import { AxiosResponse } from 'axios';
+import { getDatabase, push, ref, set } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 
 const SYSTEM = `You are a highly skilled Code generator. I need a fully functional and professional HTML page. The output should be in pure HTML and meet the following criteria:
 
@@ -10,6 +12,8 @@ const SYSTEM = `You are a highly skilled Code generator. I need a fully function
 4. All the comments you make must be commented inside the html.
 5. You must return what the user requires.
 6. Use Bootstrap for every ui component like buttons to create a RESPONSIVE and attractive interface.
+7. This code is going to be rondered ONLY on Mobile apps renderen in a web view. Always create responsive layouts!
+8. Do not include any comment or apologies. If is needed put it inside a <help> Tag in the html with display none.
 
 Please generate the corresponding HTML code following these detailed instructions.`
 
@@ -21,13 +25,13 @@ Please generate the corresponding HTML code following these detailed instruction
 
 
 
-export const useOpenAi = (appKey: string, route?: string) => {
+export const useOpenAi = (appKey?: string, route?: string) => {
     const { openAiAuthAxios, openAiMessages, setOpenAiMessages } = useContext(OpenAiContext);
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
 
     const handleRequestHtml = async (userRequest: string, callback: (r: AxiosResponse) => void) => {
-        if (route) {
+        if (route && appKey) {
             const appRouteAiMessages = openAiMessages[appKey][route].messages
     
             setIsLoading(true)
@@ -57,8 +61,6 @@ export const useOpenAi = (appKey: string, route?: string) => {
                     }
                 });
 
-                console.log('works?')
-
                 callback(response);
     
             } catch (error) {
@@ -84,5 +86,41 @@ export const useOpenAi = (appKey: string, route?: string) => {
     }
 
  
-    return {handleRequestHtml, isLoading, handleAddTabItem, openAiMessages}
+    const handleAddApp = (appName: string) => {
+        const db = getDatabase()
+        const appsRef = ref(db, 'apps')
+        const auth = getAuth()
+
+
+        const data = {
+            user: auth.currentUser?.uid,
+            [appName]: {
+                home: {
+                    messages: [],
+                    icon: 'home'
+                }
+            }
+        }
+
+        // Set the data to the /apps location
+        // set(ref_db, data)
+        //   .then(() => {
+        //     console.log('Data set successfully');
+        //   })
+        //   .catch((error) => {
+        //     console.error('Error setting data:', error);
+        //   });
+        
+        // Adds data to /apps
+        push(appsRef, data).then(() => {
+            console.log('Data set successfully');
+        })
+        .catch((error) => {
+            console.error('Error setting data:', error);
+        });
+
+
+    }
+
+    return {handleRequestHtml, isLoading, handleAddTabItem, openAiMessages, handleAddApp}
 }

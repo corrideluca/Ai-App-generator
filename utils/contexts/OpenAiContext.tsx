@@ -1,8 +1,8 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useId, useState } from "react";
 import OpenAI from "openai";
 import axios, { AxiosInstance } from 'axios';
-import { defaultApp } from "./DynamicTabContext";
+import {equalTo, get, getDatabase, orderByChild, push, query, ref, set} from 'firebase/database';
+import { getAuth } from "firebase/auth";
 
 export type MessagesAiType = {
     role: 'system' | 'assistant' | 'user',
@@ -70,8 +70,47 @@ const OpenAiConfigProvider: React.FC<Props> = ({ children }) => {
       console.error('token error', error)
       return Promise.reject(error);
     })
+  
+  
+  const loadUserApps = async () => {
+    const auth = getAuth();
+    const db = getDatabase();
+    const appsRef = ref(db, 'apps');
+    const userId = auth.currentUser?.uid;
+
+    if (userId) {
+      const userAppsQuery = query(appsRef, orderByChild('user'), equalTo(userId));
+      get(userAppsQuery)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            // Data exists, so set it to the state
+            const apps = [];
+            snapshot.forEach((childSnapshot) => {
+              apps.push({
+                id: childSnapshot.key,
+                ...childSnapshot.val(),
+              });
+            });
+            console.log(apps, 'apps');
+          } else {
+            // Data does not exist for the given user
+            console.log('No apps found for the user.');
+          }
+        })
+        .catch((error) => {
+          console.error('Error getting user apps:', error);
+        });
+    }
 
 
+  }
+  
+  
+  useEffect(() => {
+    loadUserApps();
+
+  }, [])
+  
   return (
     <Provider
       value={{
