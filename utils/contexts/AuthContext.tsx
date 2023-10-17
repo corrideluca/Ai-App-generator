@@ -62,30 +62,34 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
   }, [])
 
   const loadUserSession = async () => {
-    try {
-      await Keychain.getGenericPassword({
-        service: "com.deluca.AiApp",
-      })
-      .then((result) => {
-        setIsLoading(true);
-        if (typeof result !== "boolean") {
-          googleSignIn(result.password);
-          return;
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error(error, 'ERROR LOGIN IN');
-        setIsLoading(false);
-      });
-    } catch (error) {
-      console.error(error)
-    }
+    // try {
+    //   await Keychain.getGenericPassword({
+    //     service: "com.deluca.AiApp",
+    //   })
+    //   .then((result) => {
+    //     setIsLoading(true);
+    //     if (typeof result !== "boolean") {
+    //       googleSignIn(result.password);
+    //       return;
+    //     }
+    //     setIsLoading(false);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error, 'ERROR LOGIN IN');
+    //     setIsLoading(false);
+    //   });
+    // } catch (error) {
+    //   console.error(error)
+    // }
     
-    if (!getAuth().currentUser) {
-      await Keychain.resetGenericPassword();
-      getAuth().signOut();
-    }
+    // if (!getAuth().currentUser) {
+    //   await Keychain.resetGenericPassword();
+    //   getAuth().signOut();
+    // }
+
+    await Keychain.resetGenericPassword();
+    getAuth().signOut();
+    setIsLoading(false)
   }
 
 
