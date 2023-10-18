@@ -1,11 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
-import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
-import { AuthContext } from "../utils/contexts/AuthContext";
-
+import {  GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import {useAuthActions} from "../utils/hooks/useAuth";
 
 const Login: React.FC = () => {
-    const {signIn, isLoading} = useContext(AuthContext); 
+    const {signIn, isLoadingAuth} = useAuthActions();
 
 
     return <SafeAreaView style={styles.container}>
@@ -13,7 +12,7 @@ const Login: React.FC = () => {
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Dark}
         onPress={signIn}
-        disabled={isLoading}
+        disabled={isLoadingAuth}
         />
     </SafeAreaView>
 }
