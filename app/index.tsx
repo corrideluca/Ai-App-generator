@@ -1,14 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { Modal, Platform, SafeAreaView, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
 import { Text, View } from '../components/Themed';
-import { Link } from 'expo-router';
-import { useContext, useState } from 'react';
-import { OpenAiContext } from '../utils/contexts/OpenAiContext';
+import { useState } from 'react';
+// import { OpenAiContext } from '../utils/contexts/OpenAiContext';
 import { router } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { useOpenAi } from '../utils/hooks/useOpenAi';
-import { getAuth } from 'firebase/auth';
 
 export default function LobyScreen() {
   const { openAiMessages, handleAddApp } = useOpenAi();
@@ -35,10 +33,10 @@ export default function LobyScreen() {
       <TouchableOpacity onPress={()=> {setIsModalOpen(true)}} style={styles.appContainer}>
         <Text style={styles.createAppText}>Create new App</Text>
         <View style={styles.addApp}>
-          <FontAwesome name='plus' size={20} color={'#fff'} />  
+          <FontAwesome name='plus' size={20} color={'#fff'} />
         </View>
       </TouchableOpacity>
-      
+
 
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
 
@@ -50,8 +48,8 @@ export default function LobyScreen() {
               style={styles.input}
               placeholder='App Name'
               autoCapitalize={'none'}
-              onChangeText={setNewAppName} />    
-            
+              onChangeText={setNewAppName} />
+
             <TouchableOpacity style={styles.button} onPress={addNewApp}>
               <Text style={styles.buttonText}>Add new app</Text>
             </TouchableOpacity>
