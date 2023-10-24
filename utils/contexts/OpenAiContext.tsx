@@ -147,7 +147,6 @@ const OpenAiConfigProvider: React.FC<Props> = ({ children }) => {
               })
               
             });
-            console.error(apps)
             setOpenAiMessages(apps);
           } else {
             // Data does not exist for the given user
