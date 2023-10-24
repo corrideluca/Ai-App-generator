@@ -1,23 +1,27 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import {
-    GoogleSignin,
+    GoogleSignin
     // User,
     // statusCodes,
 } from '@react-native-google-signin/google-signin';
-import {GoogleAuthProvider, getAuth, signInWithCredential, Auth} from 'firebase/auth'
+import { GoogleAuthProvider, getAuth, signInWithCredential, Auth } from 'firebase/auth';
 import * as Keychain from 'react-native-keychain';
-import { Platform } from "react-native";
+import { Platform } from 'react-native';
 
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
 const FIREBASE_CONFIG = {
-    apiKey: Platform.OS == 'ios' ? process.env.EXPO_PUBLIC_FIREBASE_IOS_KEY : process.env.EXPO_PUBLIC_FIREBASE_ANDROID_KEY ,
+    apiKey:
+        Platform.OS == 'ios' ? process.env.EXPO_PUBLIC_FIREBASE_IOS_KEY : process.env.EXPO_PUBLIC_FIREBASE_ANDROID_KEY,
     authDomain: 'com.deluca.AiApp',
     databaseURL: 'https://aiapp-b6950-default-rtdb.firebaseio.com/',
     projectId: 'aiapp-b6950-default-rtdb',
-    appId: Platform.OS == 'ios' ? process.env.EXPO_PUBLIC_FIREBASE_IOS_APP_ID : process.env.EXPO_PUBLIC_FIREBASE_ANDROID_APP_ID,
+    appId:
+        Platform.OS == 'ios'
+            ? process.env.EXPO_PUBLIC_FIREBASE_IOS_APP_ID
+            : process.env.EXPO_PUBLIC_FIREBASE_ANDROID_APP_ID
 };
 const GOOGLE_CONFIG = {
     scopes: ['https://www.googleapis.com/auth/drive.readonly'], // what API you want to access on behalf of the user, default is email and profile
@@ -29,27 +33,27 @@ const GOOGLE_CONFIG = {
     iosClientId: '230989196110-95fasa0fi9tb92st25m5u7q2dpnnfttt.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
     googleServicePlistPath: '', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
     openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
-    profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
-}
+    profileImageSize: 120 // [iOS] The desired height (and width) of the profile image. Defaults to 120px
+};
 
-initializeApp(FIREBASE_CONFIG)
+initializeApp(FIREBASE_CONFIG);
 GoogleSignin.configure(GOOGLE_CONFIG);
 
-interface AuthStoreStateVars {
+type AuthStoreStateVars = {
     userInfo?: Auth;
-    isLoadingAuth:boolean;
-    isLoadingConfig:boolean;
-}
-interface AuthStoreState extends AuthStoreStateVars {
+    isLoadingAuth: boolean;
+    isLoadingConfig: boolean;
+};
+type AuthStoreState = {
     setUserInfo: (user: Auth) => void;
-    setIsLoadingAuth: (isLoading:boolean) => void;
-    setIsLoadingConfig: (isLoading:boolean) => void;
-}
+    setIsLoadingAuth: (isLoading: boolean) => void;
+    setIsLoadingConfig: (isLoading: boolean) => void;
+} & AuthStoreStateVars;
 
 const initialState: AuthStoreStateVars = {
     userInfo: undefined,
-    isLoadingAuth:false,
-    isLoadingConfig:false
+    isLoadingAuth: false,
+    isLoadingConfig: false
 };
 
 export const useAuthStore = create<AuthStoreState>()(
@@ -57,9 +61,9 @@ export const useAuthStore = create<AuthStoreState>()(
         persist(
             (set) => ({
                 ...initialState,
-                setIsLoadingAuth: (isLoadingAuth) => set({isLoadingAuth}),
-                setIsLoadingConfig: (isLoadingConfig) => set({isLoadingConfig}),
-                setUserInfo: (userInfo) => set({userInfo})
+                setIsLoadingAuth: (isLoadingAuth) => set({ isLoadingAuth }),
+                setIsLoadingConfig: (isLoadingConfig) => set({ isLoadingConfig }),
+                setUserInfo: (userInfo) => set({ userInfo })
             }),
             { name: 'auth-sidebar-storage' }
         )
@@ -67,34 +71,30 @@ export const useAuthStore = create<AuthStoreState>()(
 );
 
 export const useAuthActions = () => {
-    const { setIsLoadingAuth, setUserInfo, isLoadingAuth, userInfo } = useAuthStore()
-    
-    useEffect(() => {
+    const { setIsLoadingAuth, setUserInfo, isLoadingAuth, userInfo } = useAuthStore();
 
-    }, []);
+    useEffect(() => {}, []);
 
     const signIn = async () => {
-        setIsLoadingAuth(true)
+        setIsLoadingAuth(true);
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
 
-
             if (userInfo.idToken) {
                 const auth = getAuth();
-                signInWithCredential(auth, GoogleAuthProvider.credential(userInfo.idToken)) // registers on firebase
+                signInWithCredential(auth, GoogleAuthProvider.credential(userInfo.idToken)); // registers on firebase
                 setUserInfo(auth);
 
                 await Keychain.setGenericPassword(userInfo.user.email, userInfo.idToken, {
                     service: 'com.deluca.AiApp'
                 });
             }
-
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
-        setIsLoadingAuth(false)
-    }
+        setIsLoadingAuth(false);
+    };
 
-    return {isLoadingAuth, signIn, userInfo}
-}
+    return { isLoadingAuth, signIn, userInfo };
+};

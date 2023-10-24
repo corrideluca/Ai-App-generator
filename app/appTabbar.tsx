@@ -1,11 +1,11 @@
-import { useLocalSearchParams } from "expo-router";
-import TabbarNavigator from "../components/TabbarNavigator"
+import { useLocalSearchParams } from 'expo-router';
+import TabbarNavigator from '../components/TabbarNavigator';
 
-const AppIANavigator = () => {
-  const params = useLocalSearchParams();
-  const { appId } = params;
+// Se usa esto?
+// noinspection JSUnusedGlobalSymbols
+export default function AppIANavigator() {
+    const params = useLocalSearchParams();
+    const { appId } = params;
 
-  return <TabbarNavigator appId={appId as string} />
+    return <TabbarNavigator appId={appId as string} />;
 }
-
-export default AppIANavigator
