@@ -2,9 +2,9 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text, View, useColorScheme } from 'react-native';
-import { OpenAiConfigProvider } from '../utils/contexts/OpenAiContext';
+import { OpenAiConfigProvider, OpenAiContext } from '../utils/contexts/OpenAiContext';
 import Colors from '../constants/Colors';
 import Login from '../components/Login';
 import {useAuthStore} from "../utils/hooks/useAuth";
@@ -23,7 +23,9 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  return <RootLayoutNav />
+  return <OpenAiConfigProvider>
+    <RootLayoutNav />
+  </OpenAiConfigProvider>
 }
 
 function RootLayoutNav() {
@@ -63,7 +65,6 @@ function RootLayoutNav() {
   }
 
   return (
-    <OpenAiConfigProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <Stack>
             <Stack.Screen name='index' options={{headerShown: true, header: Header}}/>
@@ -72,7 +73,6 @@ function RootLayoutNav() {
             {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
           </Stack>
       </ThemeProvider>
-    </OpenAiConfigProvider>
   );
 }
 

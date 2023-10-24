@@ -67,7 +67,8 @@ export const useAuthStore = create<AuthStoreState>()(
 );
 
 export const useAuthActions = () => {
-    const {setIsLoadingAuth , setUserInfo, isLoadingAuth } = useAuthStore()
+    const { setIsLoadingAuth, setUserInfo, isLoadingAuth, userInfo } = useAuthStore()
+    
     useEffect(() => {
 
     }, []);
@@ -91,18 +92,9 @@ export const useAuthActions = () => {
 
         } catch (error) {
             console.error(error)
-            // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-            //     user cancelled the login flow
-            // } else if (error.code === statusCodes.IN_PROGRESS) {
-            //     operation (e.g. sign in) is in progress already
-            // } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-            //     play services not available or outdated
-            // } else {
-            //     some other error happened
-            // }
         }
         setIsLoadingAuth(false)
     }
 
-    return {isLoadingAuth, signIn}
+    return {isLoadingAuth, signIn, userInfo}
 }

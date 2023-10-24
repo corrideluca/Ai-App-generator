@@ -22,11 +22,11 @@ export default function LobyScreen() {
   return (
     <SafeAreaView style={styles.container}>
 
-      {Object.keys(openAiMessages).map(appName => <TouchableOpacity style={styles.appContainer} onPress={()=>router.push({
+      {openAiMessages.map(appData => <TouchableOpacity style={styles.appContainer} onPress={()=>router.push({
           pathname: "/appTabbar",
-          params: { appKey: appName },
+          params: { appId: appData.firebaseId },
       })}>
-            <Text style={styles.appName}>{appName}</Text>
+            <Text style={styles.appName}>{appData.name}</Text>
         </TouchableOpacity>
       )}
 

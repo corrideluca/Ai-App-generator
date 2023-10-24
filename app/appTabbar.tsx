@@ -3,9 +3,9 @@ import TabbarNavigator from "../components/TabbarNavigator"
 
 const AppIANavigator = () => {
   const params = useLocalSearchParams();
-  const { appKey } = params;
+  const { appId } = params;
 
-  return <TabbarNavigator appKey={appKey as string} />
+  return <TabbarNavigator appId={appId as string} />
 }
 
 export default AppIANavigator

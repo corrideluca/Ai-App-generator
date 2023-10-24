@@ -3,17 +3,18 @@ import { Text, View } from "./Themed"
 import Colors from "../constants/Colors";
 import { Link } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
+import { App } from "../utils/contexts/OpenAiContext";
 
 interface Props {
-    appKey: string
+    app: App
 }
 
-const Header: React.FC<Props> = ({ appKey }) => {
+const Header: React.FC<Props> = ({ app }) => {
     const colorScheme = useColorScheme()
 
     return <View style={styles.headerContainer}>
         <SafeAreaView style={{flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'center'}}>
-            <Link style={{ zIndex: 3, position: 'absolute', left: 5, bottom: 0 }} href={{pathname: "/", params: { appKey }}} asChild>
+            <Link style={{ zIndex: 3, position: 'absolute', left: 5, bottom: 0 }} href={{pathname: "/", params: { appKey: app.firebaseId }}} asChild>
                 <Pressable>
                     {({ pressed }) => (
                         <FontAwesome
@@ -26,8 +27,8 @@ const Header: React.FC<Props> = ({ appKey }) => {
                 </Pressable>
             </Link>   
             
-            <Text style={styles.headerText}>{appKey}</Text>
-            <Link style={{ zIndex: 3, position: 'absolute', right: 5, bottom: 0 }} href={{pathname: "/modal", params: { appKey }}} asChild>
+            <Text style={styles.headerText}>{app.name}</Text>
+            <Link style={{ zIndex: 3, position: 'absolute', right: 5, bottom: 0 }} href={{pathname: "/modal", params: { appKey: app.firebaseId }}} asChild>
                 <Pressable>
                     {({ pressed }) => (
                         <FontAwesome
