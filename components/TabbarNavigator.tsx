@@ -1,65 +1,66 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import IAEditableScreen from "./IaEditableView";
-import { FontAwesome } from "@expo/vector-icons";
-import { Link } from "expo-router";
-import { Pressable, useColorScheme } from "react-native";
-import Colors from "../constants/Colors";
-import { View } from "./Themed";
-import { useOpenAi } from "../utils/hooks/useOpenAi";
-import Header from "./header";
-import { App } from "../utils/contexts/OpenAiContext";
+import IAEditableScreen from './IaEditableView';
+import { FontAwesome } from '@expo/vector-icons';
+import { useColorScheme } from 'react-native';
+import { View } from './Themed';
+import { useOpenAi } from '../utils/hooks/useOpenAi';
+import Header from './header';
+import { App } from '../utils/contexts/OpenAiContext';
 
 const Tab = createBottomTabNavigator();
 
-interface Props {
-    appId: string
-}
+type Props = {
+    appId: string;
+};
 
-const TabbarNavigator : React.FC<Props> = ({appId}) => {
-  const colorScheme = useColorScheme();
-  const {openAiMessages} = useOpenAi(appId);
-    
-  if (!appId) {
-      return <View />
-  }  
-    
-  const currentApp = openAiMessages.find(app => app.firebaseId == appId) as App;
+const TabbarNavigator: React.FC<Props> = ({ appId }) => {
+    // const colorScheme = useColorScheme();
+    const { openAiMessages } = useOpenAi(appId);
 
-  return (
-    <NavigationContainer independent>
-          <Tab.Navigator screenOptions={({ route }) => ({
-              header: () => <Header app={currentApp} />,
-              tabBarIcon: ({ focused, color, size }) => {
-                const selectedRouteFirebaseId = route.name
-                
-                const appRouteItem = currentApp.routes.find(routeItem => routeItem.firebaseId == selectedRouteFirebaseId);
+    if (!appId) {
+        return <View />;
+    }
 
+    const currentApp = openAiMessages.find((app) => app.firebaseId == appId) as App;
 
-                let tabBarIcon;
-                if (openAiMessages && route && appRouteItem) {
-                  tabBarIcon = appRouteItem.icon;
-                }
+    return (
+        <NavigationContainer independent>
+            <Tab.Navigator
+                screenOptions={({ route }) => ({
+                    header: () => <Header app={currentApp} />,
+                    tabBarIcon: ({ color }) => {
+                        const selectedRouteFirebaseId = route.name;
 
-              // You can return any component that you like here!
-              return <FontAwesome name={tabBarIcon as 'home'} color={color} size={30} />;
-            },
-              tabBarActiveTintColor: 'tomato',
-              tabBarInactiveTintColor: 'gray',
-            })}>
-        
-              {currentApp.routes.map(route =>  <Tab.Screen
-                name={route.firebaseId}
-                key={route.firebaseId}
-                options={{
-                tabBarLabel: route.name,
-               }}
-                component={() => <IAEditableScreen appId={currentApp.firebaseId} routeId={route.firebaseId} />}
-              />)}
+                        const appRouteItem = currentApp.routes.find(
+                            (routeItem) => routeItem.firebaseId == selectedRouteFirebaseId
+                        );
 
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
-}
+                        let tabBarIcon;
+                        if (openAiMessages && route && appRouteItem) {
+                            tabBarIcon = appRouteItem.icon;
+                        }
 
-export default TabbarNavigator
+                        // You can return any component that you like here!
+                        return <FontAwesome name={tabBarIcon as 'home'} color={color} size={30} />;
+                    },
+                    tabBarActiveTintColor: 'tomato',
+                    tabBarInactiveTintColor: 'gray'
+                })}
+            >
+                {currentApp.routes.map((route) => (
+                    <Tab.Screen
+                        name={route.firebaseId}
+                        key={route.firebaseId}
+                        options={{
+                            tabBarLabel: route.name
+                        }}
+                        component={() => <IAEditableScreen appId={currentApp.firebaseId} routeId={route.firebaseId} />}
+                    />
+                ))}
+            </Tab.Navigator>
+        </NavigationContainer>
+    );
+};
+
+export default TabbarNavigator;
