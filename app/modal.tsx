@@ -16,7 +16,7 @@ export default function ModalScreen() {
   const { appKey } = params;
   const { openAiMessages } = useOpenAi(appKey as string);
 
-  const currentAppData = Object.keys(openAiMessages[appKey as string]);
+  const currentAppData = openAiMessages.find(app => app.firebaseId == appKey);
 
   return (
     <View style={styles.container}>
@@ -27,10 +27,10 @@ export default function ModalScreen() {
         <Text style={styles.subtitle}>Tab items</Text>
       </View>
       {
-        currentAppData.map(routeName => <View style={styles.routeItemContainer}>
+        currentAppData?.routes.map(routeName => <View style={styles.routeItemContainer}>
           {/* TODO ponerle tipo a fontAwesome icons */}
-          <FontAwesome name={openAiMessages[appKey as string][routeName].icon as 'home'} size={30} /> 
-          <Text style={styles.routeItemText}>{routeName}</Text>
+          <FontAwesome name={routeName.icon as 'home'} size={30} /> 
+          <Text style={styles.routeItemText}>{routeName.name}</Text>
         </View>)
       }
       

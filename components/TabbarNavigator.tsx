@@ -8,42 +8,53 @@ import Colors from "../constants/Colors";
 import { View } from "./Themed";
 import { useOpenAi } from "../utils/hooks/useOpenAi";
 import Header from "./header";
+import { App } from "../utils/contexts/OpenAiContext";
 
 const Tab = createBottomTabNavigator();
 
 interface Props {
-    appKey: string
+    appId: string
 }
 
-const TabbarNavigator : React.FC<Props> = ({appKey}) => {
+const TabbarNavigator : React.FC<Props> = ({appId}) => {
   const colorScheme = useColorScheme();
-  const {openAiMessages} = useOpenAi(appKey);
+  const {openAiMessages} = useOpenAi(appId);
     
-  if (!appKey) {
+  if (!appId) {
       return <View />
   }  
     
+  const currentApp = openAiMessages.find(app => app.firebaseId == appId) as App;
+
   return (
     <NavigationContainer independent>
           <Tab.Navigator screenOptions={({ route }) => ({
-              header: () => <Header appKey={appKey} />,
+              header: () => <Header app={currentApp} />,
               tabBarIcon: ({ focused, color, size }) => {
-              const selectedRoute = route.name
+                const selectedRouteFirebaseId = route.name
+                
+                const appRouteItem = currentApp.routes.find(routeItem => routeItem.firebaseId == selectedRouteFirebaseId);
 
-              let tabBarIcon;
-              if (openAiMessages && route) {
-                tabBarIcon = openAiMessages[appKey][selectedRoute].icon
-              }
+
+                let tabBarIcon;
+                if (openAiMessages && route && appRouteItem) {
+                  tabBarIcon = appRouteItem.icon;
+                }
 
               // You can return any component that you like here!
-            return <FontAwesome name={tabBarIcon as 'home'} color={color} size={30} />;
-          },
-          tabBarActiveTintColor: 'tomato',
-          tabBarInactiveTintColor: 'gray',
-          })}>
-              {Object.keys(openAiMessages[appKey]).map(routeNames =>  <Tab.Screen
-                  name={routeNames}
-                  component={() => <IAEditableScreen appKey={appKey} routeName={routeNames} />}
+              return <FontAwesome name={tabBarIcon as 'home'} color={color} size={30} />;
+            },
+              tabBarActiveTintColor: 'tomato',
+              tabBarInactiveTintColor: 'gray',
+            })}>
+        
+              {currentApp.routes.map(route =>  <Tab.Screen
+                name={route.firebaseId}
+                key={route.firebaseId}
+                options={{
+                tabBarLabel: route.name,
+               }}
+                component={() => <IAEditableScreen appId={currentApp.firebaseId} routeId={route.firebaseId} />}
               />)}
 
       </Tab.Navigator>

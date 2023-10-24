@@ -10,27 +10,35 @@ import { FontAwesome } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 
 interface Props {
-  appKey: string;
-  routeName: string;
+  appId: string;
+  routeId: string;
 }
 
-const IAEditableScreen: React.FC<Props> = ({appKey, routeName}) => {
-  const {handleRequestHtml, isLoading, openAiMessages} = useOpenAi(appKey, routeName)
+const IAEditableScreen: React.FC<Props> = ({appId, routeId}) => {
+  const {handleRequestHtml, isLoading, openAiMessages} = useOpenAi(appId, routeId)
   const [userInput, setUserInput] = useState<string>('')
   const [html, setHtml] = useState<string>('');
 
   const handleChangeHtml = (response: AxiosResponse) => {
     // TODO ver si esto sigue siendo necesesario, parece que no
     const htmlContent = response.data.choices[0].message.content;
+    console.error(htmlContent)
     setHtml(htmlContent)
   }
+ 
+  const currentApp = openAiMessages.find(appData => appData.firebaseId == appId);
+  const currentRoute = currentApp?.routes.find(routeData => routeData.firebaseId == routeId);
 
-  const lastResponse = openAiMessages[appKey][routeName].messages.findLast(messageData => messageData.role == 'assistant')
+  let lastestAssistanseResponse;
 
-  if (lastResponse?.content) {
+  if (currentRoute && currentRoute.messages) {
+    lastestAssistanseResponse = currentRoute.messages.findLast(messageData => messageData.role == 'assistant')
+  }
+
+
+  if (lastestAssistanseResponse?.content) {
     return <View style={{height: '100%', width: '100%'}}>
-      <WebView scalesPageToFit source={{ html: lastResponse?.content }} />
-      
+      <WebView scalesPageToFit source={{ html: lastestAssistanseResponse?.content }} />
       <View style={styles.inputContainer}>
         {isLoading ? <ActivityIndicator /> : <>
             <TextInput style={styles.input} placeholder='Write GPT here' onChangeText={setUserInput} />
