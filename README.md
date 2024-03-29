@@ -1,4 +1,4 @@
-# Chat-Based AI Editing App
+# Chat-Based AI Editing App ( Still in development )
 
 Welcome to the Chat-Based AI Editing App! This app allows users to interact with an AI model to modify the application's behavior via chat. Below you'll find instructions on how to set up the project and utilize its features.
 
@@ -68,4 +68,4 @@ Once the app is running, users can interact with the AI model through the chat i
 
 ## Support
 
-For any issues or inquiries, please contact [your_email@example.com](mailto:corrideluca@gmail.com).
+For any issues or inquiries, please contact [corrideluca@gmail.com](mailto:corrideluca@gmail.com).
